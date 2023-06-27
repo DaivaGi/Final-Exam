@@ -1,155 +1,110 @@
 import { useEffect, useState } from "react";
-import { Button, Segment, Grid, Table, Input, TableBody } from "semantic-ui-react";
+import {
+  Button,
+  Segment,
+  Grid,
+  Table,
+  Rating,
+  Input,
+  TableBody,
+} from "semantic-ui-react";
 import { useParams, NavLink, useNavigate } from "react-router-dom";
 import { AdminMenu } from "../components/adminmenu";
 import { MealsPart } from "../components/MealPart";
 
 const JSON_HEADERS = {
-    "Content-Type": "application/json",
-  };
+  "Content-Type": "application/json",
+};
 
 export function ViewForeman() {
   const [menu, setMenu] = useState({});
   const [updateTitle, setUpdateTitle] = useState(false);
   const [title, setTitle] = useState("");
-  const [titleError, setTitleError] = useState('');
+  const [titleError, setTitleError] = useState("");
   const [titles, setTitles] = useState([]);
   const [formValid, setFormValid] = useState(false);
   const [error, setError] = useState();
   const navigate = useNavigate();
-  const [carService, setCarService] =  useState('');
-  const [manager, setManager] = useState('');
-  const [address, setAddress] = useState('');
+  const [carService, setCarService] = useState("");
+  const [manager, setManager] = useState("");
+  const [address, setAddress] = useState("");
+  const [foreman, setForeman] = useState("");
+  const [ratingState, setRatingState] = useState('');
 
   const params = useParams();
 
   useEffect(() => {
-    fetch("/api/v1/carServices/" + params.id)
+    fetch("/api/v1/foremen/" + params.id)
+      .then((response) => response.json())
+      .then(setForeman);
+  }, [params.id]);
+
+  useEffect(() => {
+    fetch("/api/v1/carServices/foreman/" + params.id)
       .then((response) => response.json())
       .then(setCarService);
-  }, [params.id, updateTitle]);
+  }, [params.id]);
 
-  useEffect(() => {
-    if (titleError) {
-      setFormValid(false)
-    } else {
-      setFormValid(true)
-    }
-  }, [titleError])
+ 
+    const handleRate = (e, { rating, maxRating }) => {
+      setRatingState({ rating, maxRating });
+    };
 
-  const titleHandler = (e) => {
-    setTitle(e.target.value);
-    if (e.target.value.length < 2 || e.target.value.length > 100) {
-      setTitleError("Įveskite nuo 2 iki 100 simbolių!");
-      document.getElementById("title").style.borderColor = "red";
-      if (!e.target.value) {
-        setTitleError("Negali būti tuščias!");
-      }
-    } else {
-      setTitleError("");
-      document.getElementById("title").style.borderColor = "#c7c5c5";
-    }
-    if (titles.includes(e.target.value)) {
-      setTitleError("Servisas su šiuo pavadinimu jau sukurtas!");
-    }
-  };
-
-  useEffect(() => {
-    fetch("/api/v1/carServices")
-      .then((response) => response.json())
-      .then((jsonResponse) => {
-        const allTitles = jsonResponse.map((res) => res.title);
-        setTitles(allTitles);
-      });
-  }, []);
-
-  const updateCarService = () => {
-    fetch("/api/v1/carServices/update/" + params.id, {
-      method: "PUT",
-      headers: JSON_HEADERS,
-      body: JSON.stringify({
-        title,
-        manager,
-        address        
-      }),
-    })
-      .then((result) => {
-        if (!result.ok) {
-          setError("Update failed");
-        } else {
-          setError();
-        }
-      })
-      .then(setUpdateTitle(false))
-      .then(setTitle(''));
-  };
-
-  const exitUpdate = () => {
-    setUpdateTitle(false);
-    setTitle('');
-  }
 
   return (
     <div>
-      <Grid columns={2}>
-        <Grid.Column width={3} id="main">
-          <AdminMenu active='menu' />
-        </Grid.Column>
-        <Grid.Column textAlign="left" verticalAlign="top" width={13}>
-          <Segment id="segment" color="teal">
-            <Table celled>
-              <Table.Header>
-                <Table.Row>
-                  <Table.HeaderCell>Pavadinimas</Table.HeaderCell>
-                  <Table.HeaderCell>Vadybininkas</Table.HeaderCell>
-                </Table.Row>
-                </Table.Header>
-              <Table.Body>
-                    <Table.Row>                   
-                    {!updateTitle && ( 
-                      <Table.Cell><Button
-                          basic
-                          compact
-                          title="Redaguoti"
-                          icon="pencil alternate"                          
-                          onClick={() => setUpdateTitle(true)}                          
-                        ></Button > {carService.title}</Table.Cell>)}
-                       {updateTitle && (<Table.Cell>
-                        {titleError && <div style={{ color: "red" }}>{titleError}</div>}
-                        <Button
-                          basic
-                          compact
-                          title="Patvirtinti"
-                          icon="check"
-                          onClick={updateCarService}                          
-                        ></Button>
-                        <Button
-                          basic
-                          compact
-                          title="Atšaukti"
-                          icon="x icon"
-                          onClick={exitUpdate}                          
-                        ></Button><Input type='text' placeholder={carService.title} id="title"
-                        value={title}
-                        onChange={(e) => titleHandler(e)}></Input></Table.Cell>)}
-                      <Table.Cell>{carService.title}</Table.Cell>
-                      </Table.Row>
-                      </Table.Body>
-                      </Table>
-                      <Table>
-                      <Table.Header>
-                      <Table.Row>                        
-                  <Table.HeaderCell>Adresas</Table.HeaderCell>
-                  </Table.Row>
-              </Table.Header>
-              <TableBody>
-                <Table.Cell>{carService.address}</Table.Cell>
-              </TableBody>
-            </Table>
-          </Segment>
-          <MealsPart />
-        </Grid.Column>
-      </Grid>
+      <Segment id="segment" color="teal">
+        <Table celled>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Vardas</Table.HeaderCell>
+              <Table.HeaderCell>Pavardė</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            <Table.Row>
+              <Table.Cell>{foreman.name}</Table.Cell>
+              <Table.Cell>{foreman.surname}</Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table>
+        <Table>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Specializacija</Table.HeaderCell>
+              <Table.HeaderCell>Miestas</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            <Table.Row>
+              <Table.Cell>{foreman.specialization}</Table.Cell>
+              <Table.Cell>{foreman.city}</Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table>
+        <Table>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Reitingas</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <TableBody>
+            <Table.Cell>{foreman.rating}</Table.Cell>
+          </TableBody>
+        </Table>
+        <Table>
+          <Table.Header>
+            <Table.Row>
+                <Table.HeaderCell>Įvertinti meistrą</Table.HeaderCell> 
+ 
+    <div>
+      <Rating maxRating={10} onRate={handleRate} />
+      {/* <pre>{JSON.stringify(ratingState, null, 2)}</pre> */}
+   </div>
+         </Table.Row>
+          </Table.Header>
+        </Table>
+      </Segment>
     </div>
   );
 }

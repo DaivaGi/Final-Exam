@@ -15,6 +15,7 @@ import { FirstPage } from './pages/FirstPage';
 import { ForemenList } from './pages/ForemenListPage';
 import { ServiceList } from './components/menuList';
 import { AdminForemenList } from './pages/adminForemenList';
+import { ViewForeman } from './pages/viewForeman';
 
 function App() {
 
@@ -66,7 +67,8 @@ function App() {
       
         <FoodMenu />
         <div className='container'>
-        <Routes>
+        <Routes>       
+        <Route path='/foremenList/:id' element={< ViewForeman />} />
         <Route path='/' element={<FirstPage />} />
         <Route path='/serviceList' element={<ServiceList/>} />
         <Route path='/foremenList' element={<ForemenList />} />

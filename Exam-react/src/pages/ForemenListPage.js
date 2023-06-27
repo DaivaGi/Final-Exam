@@ -79,7 +79,7 @@ export function ForemenList() {
                 <Button
                           as={NavLink}
                           exact
-                          to={"/menus/list/view/" + meal.id}
+                          to={"/foremenList/" + meal.id}
                           basic
                           compact
                           icon="eye"
