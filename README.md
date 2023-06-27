@@ -1,4 +1,7 @@
-Prisijungimo duomenys: vartotojo vardas: admin, slaptažodis: admin
+Prisijungimo duomenys: 
+
+vartotojo vardas: admin, slaptažodis: admin
+
 http://localhost:8080/swagger-ui/
 http://localhost:3000/
 
