@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface CarServiceRepository extends JpaRepository<CarService, Long> {
 
+    CarService findAllByForemen_Id(long id);
 }

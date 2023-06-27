@@ -32,6 +32,9 @@ public class CarServiceService {
         return carServiceRepository.findAll();
     }
 
+    public CarService getServiceByForemanId(long id){
+        return carServiceRepository.findAllByForemen_Id(id);
+    }
     public Optional<CarService> getById(Long id) {
         return carServiceRepository.findById(id);
     }

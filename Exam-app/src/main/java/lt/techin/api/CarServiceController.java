@@ -62,6 +62,14 @@ public class CarServiceController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping(value = "foreman/{foremanId}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<CarService> getServiceByForemanId(@PathVariable Long foremanId) {
+        var carServiceOptional = carServiceService.getServiceByForemanId(foremanId);
+
+        return ok(carServiceOptional);
+
+    }
+
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<CarServiceDto> createCarService(@RequestBody CarServiceDto carServiceDto) {
 
